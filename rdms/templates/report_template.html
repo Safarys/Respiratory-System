@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1e3c72;
+            text-align: center;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #1e3c72;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .diagnosis {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 5px solid #1e3c72;
+        }
+
+        .severity {
+            font-weight: bold;
+            font-size: 18px;
+            color: #d9534f;
+        }
+
+        .spectrogram {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spectrogram img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #555;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Respiratory Disease Report</h1>
+        <p>Date: {{ date }}</p>
+    </div>
+
+    <div class="info">
+        <p><strong>Patient Name:</strong> {{ patient_name }}</p>
+        <p><strong>Age:</strong> {{ age }}</p>
+        <p><strong>Symptoms:</strong> {{ symptoms }}</p>
+    </div>
+
+    <div class="diagnosis">
+        <h2>Diagnosis Result</h2>
+        <p><strong>Disease:</strong> {{ predicted_label }}</p>
+        <p><strong>Confidence:</strong> {{ confidence }}%</p>
+        <p class="severity"><strong>Severity:</strong> {{ severity }}</p>
+    </div>
+
+    {% if spectrogram_path %}
+    <div class="spectrogram">
+        <h3>Spectrogram Analysis</h3>
+        <img src="{{ spectrogram_path }}" alt="Spectrogram">
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        <p><strong>Disclaimer:</strong> This report is AI-generated and should be reviewed by a medical professional.</p>
+    </div>
+</div>
+
+</body>
+</html>

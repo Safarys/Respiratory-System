@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respiratory Disease Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #2a5298;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: rgba(42, 82, 152, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .file-types {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2a5298;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #1e3c72;
+        }
+
+        .result h3 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+
+        #selected-file-name {
+            margin-top: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .spectrogram {
+            margin-top: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .spectrogram img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .spectrogram img:hover {
+            transform: scale(1.05);
+        }
+
+        .spectrogram img:active {
+            transform: scale(1.2);
+        }
+
+        .loading {
+            display: none;
+            color: #1e3c72;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Respiratory Disease Prediction</h2>
+        <form action="{% url 'predict' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="upload-area" onclick="document.getElementById('audio-file').click()">
+                <i class="fas fa-microphone upload-icon"></i>
+                <p class="upload-text">Click or drag audio file here</p>
+                <p class="file-types">Supported formats: .wav, .mp3, .ogg</p>
+                <input type="file" id="audio-file" name="audiofile" accept=".wav,.mp3,.ogg" required class="file-input" onchange="updateFileName(this)">
+                <div id="selected-file-name"></div>
+            </div>
+            <button type="submit">
+                <i class="fas fa-stethoscope"></i> Analyze Audio
+            </button>
+        </form>
+        
+        {% if result %}
+        <div class="result">
+            <h3>Prediction Result</h3>
+            <p>{{ result }}</p>
+
+            {% if spectrogram_path %}
+            <div class="spectrogram">
+                <h4>Spectrogram</h4>
+                <p class="loading">Processing...</p>
+                <img src="{{ spectrogram_path }}" alt="Generated Spectrogram" >
+            </div>
+            {% endif %}
+
+            {% if report_path %}
+            <a href="{{ report_path }}" download="prediction_report.pdf">
+                <button>Download Report</button>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name;
+            document.getElementById('selected-file-name').textContent = fileName || '';
+        }
+    </script>
+</body>
+</html>
