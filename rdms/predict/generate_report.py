@@ -4,13 +4,13 @@ from reportlab.platypus import Image
 import os
 from django.conf import settings
 
-def generate_report(patient_name, age, symptoms, date, disease, confidence, severity, spectrogram_path):
+def generate_report(patient_name, age, symptoms, date, disease, confidence, severity, spectrogram_path,report_path):
     """Generates a PDF report for respiratory disease diagnosis, including spectrogram."""
     report_dir = os.path.join(settings.MEDIA_ROOT, "reports")
     os.makedirs(report_dir, exist_ok=True)  # Ensure directory exists
 
-    report_filename = f"{patient_name.replace(' ', '_')}_report.pdf"
-    report_path = os.path.join(report_dir, report_filename)
+    # report_filename = f"{patient_name.replace(' ', '_')}_report.pdf"
+    # report_path = os.path.join(report_dir, report_filename)
     
     c = canvas.Canvas(report_path, pagesize=letter)
     c.setFont("Helvetica", 12)

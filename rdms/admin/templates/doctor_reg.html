@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .content-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        /* Form styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        input:invalid {
+            border-color: #ff6b6b;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Password field styles */
+        .password-info {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .password-strength-meter {
+            height: 5px;
+            width: 100%;
+            background: #ddd;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+        
+        .password-strength-meter div {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease-in-out;
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Doctor Registration Section -->
+    <div id="doctor-registration" class="content-section">
+        <h2>Doctor Registration</h2>
+        <form id="doctorRegistrationForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="specialization">Specialization</label>
+                <select id="specialization" required>
+                    <option value="">Select Specialization</option>
+                    <option>Cardiology</option>
+                    <option>Pediatrics</option>
+                    <option>Neurology</option>
+                    <option>Orthopedics</option>
+                    <option>Dermatology</option>
+                    <option>Obstetrics & Gynecology</option>
+                    <option>Psychiatry</option>
+                    <option>Oncology</option>
+                    <option>Urology</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="licenseNumber">Medical License Number</label>
+                <input type="text" id="licenseNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}" required>
+                <div class="password-strength-meter">
+                    <div id="strength-meter-bar"></div>
+                </div>
+                <small id="passwordInfo" class="password-info">Password must contain at least 8 characters, including uppercase, lowercase, number and special character.</small>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" required>
+                <small id="confirmPasswordInfo" class="password-info"></small>
+            </div>
+            <div class="form-group">
+                <label for="qualifications">Qualifications</label>
+                <textarea id="qualifications" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Register Doctor</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('doctorRegistrationForm');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordInfo = document.getElementById('passwordInfo');
+            const confirmPasswordInfo = document.getElementById('confirmPasswordInfo');
+            const strengthMeterBar = document.getElementById('strength-meter-bar');
+            
+            // Password strength validation
+            password.addEventListener('input', function() {
+                const value = password.value;
+                let strength = 0;
+                let percentage = 0;
+                
+                // Check length
+                if(value.length >= 8) strength += 1;
+                
+                // Check for lowercase letters
+                if(/[a-z]/.test(value)) strength += 1;
+                
+                // Check for uppercase letters
+                if(/[A-Z]/.test(value)) strength += 1;
+                
+                // Check for numbers
+                if(/\d/.test(value)) strength += 1;
+                
+                // Check for special characters
+                if(/[!@#$%^&*]/.test(value)) strength += 1;
+                
+                // Calculate percentage for visual meter
+                percentage = (strength / 5) * 100;
+                
+                // Update strength meter bar
+                strengthMeterBar.style.width = percentage + '%';
+                
+                // Set color based on strength
+                if(strength < 3) {
+                    strengthMeterBar.style.backgroundColor = '#ff6b6b';
+                    passwordInfo.style.color = '#ff6b6b';
+                    passwordInfo.textContent = 'Weak password: Please include uppercase, lowercase, numbers, and special characters';
+                } else if(strength < 5) {
+                    strengthMeterBar.style.backgroundColor = '#ffa502';
+                    passwordInfo.style.color = '#ffa502';
+                    passwordInfo.textContent = 'Medium strength: Password meets some requirements';
+                } else {
+                    strengthMeterBar.style.backgroundColor = '#2ecc71';
+                    passwordInfo.style.color = '#2ecc71';
+                    passwordInfo.textContent = 'Strong password: All requirements met!';
+                }
+            });
+            
+            // Confirm password validation
+            confirmPassword.addEventListener('input', function() {
+                if(confirmPassword.value === '') {
+                    confirmPasswordInfo.textContent = '';
+                } else if(confirmPassword.value !== password.value) {
+                    confirmPasswordInfo.style.color = '#ff6b6b';
+                    confirmPasswordInfo.textContent = "Passwords don't match";
+                    confirmPassword.setCustomValidity("Passwords don't match");
+                } else {
+                    confirmPasswordInfo.style.color = '#2ecc71';
+                    confirmPasswordInfo.textContent = "Passwords match!";
+                    confirmPassword.setCustomValidity('');
+                }
+            });
+            
+            // Re-validate confirm password when original password changes
+            password.addEventListener('input', function() {
+                if(confirmPassword.value !== '') {
+                    if(confirmPassword.value !== password.value) {
+                        confirmPasswordInfo.style.color = '#ff6b6b';
+                        confirmPasswordInfo.textContent = "Passwords don't match";
+                        confirmPassword.setCustomValidity("Passwords don't match");
+                    } else {
+                        confirmPasswordInfo.style.color = '#2ecc71';
+                        confirmPasswordInfo.textContent = "Passwords match!";
+                        confirmPassword.setCustomValidity('');
+                    }
+                }
+            });
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                if(password.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    alert("Passwords don't match!");
+                    return false;
+                }
+                
+                // You would typically send this data to a server here
+                alert('Doctor registration successful!');
+                // Uncommment below line for production use
+                // return true;
+                
+                // For demonstration, prevent actual submission
+                e.preventDefault();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>

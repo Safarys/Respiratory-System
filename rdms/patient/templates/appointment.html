@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Appointment Scheduler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .section-title {
+            margin-top: 0;
+            color: #3498db;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        .row .form-group {
+            flex: 1;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .required:after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Patient Appointment Scheduler</h1>
+    
+    <form id="patientAppointmentForm">
+        <div class="section">
+            <h3 class="section-title">Appointment Details</h3>
+            
+            <div class="form-group">
+                <label for="department" class="required">Department</label>
+                <select id="department" name="department" required>
+                    <option value="">-- Select Specialization --</option>
+                    <option value="Allergist">Allergist/Immunologist</option>
+                    <option value="Sleep">Sleep Specialist</option>
+                    <option value="Pulmonologist">Pulmonologist</option>
+                    
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="doctor" class="required">Doctor</label>
+                <select id="doctor" name="doctor" required>
+                    <option value="">-- Select Doctor --</option>
+                    <option value="dr-smith" data-department="cardiology">Dr. Smith (Cardiology)</option>
+                    <option value="dr-jones" data-department="general-medicine">Dr. Jones (General Medicine)</option>
+                    <option value="dr-patel" data-department="neurology">Dr. Patel (Neurology)</option>
+                    <option value="dr-williams" data-department="pediatrics">Dr. Williams (Pediatrics)</option>
+                    <option value="dr-garcia" data-department="dermatology">Dr. Garcia (Dermatology)</option>
+                    <option value="dr-chen" data-department="orthopedics">Dr. Chen (Orthopedics)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="appointmentType" class="required">Appointment Type</label>
+                <select id="appointmentType" name="appointmentType" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="new">New Patient Consultation</option>
+                    <option value="followup">Follow-up Visit</option>
+                    <option value="annual">Annual Check-up</option>
+                    <option value="urgent">Urgent Care</option>
+                    <option value="specialist">Specialist Consultation</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="appointmentDate" class="required">Date</label>
+                <input type="date" id="appointmentDate" name="appointmentDate" required>
+            </div>
+            
+            <div class="row">
+                <div class="form-group">
+                    <label for="timeFrom" class="required">Time From</label>
+                    <input type="time" id="timeFrom" name="timeFrom" required>
+                </div>
+                <div class="form-group">
+                    <label for="timeTo" class="required">Time To</label>
+                    <input type="time" id="timeTo" name="timeTo" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tokens">Number of Tokens (if applicable)</label>
+                <input type="number" id="tokens" name="tokens" min="1" value="1">
+            </div>
+            
+            <div class="form-group">
+                <label for="reason">Reason for Visit</label>
+                <textarea id="reason" name="reason" rows="3"></textarea>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit">Create Appointment</button>
+        </div>
+    </form>
+
+    <script>
+        // Filter doctors based on department
+        document.getElementById('department').addEventListener('change', function() {
+            const selectedDepartment = this.value;
+            const doctorSelect = document.getElementById('doctor');
+            const doctorOptions = doctorSelect.querySelectorAll('option');
+            
+            // Reset doctor selection
+            doctorSelect.value = '';
+            
+            // Show/hide doctors based on department
+            for (let i = 0; i < doctorOptions.length; i++) {
+                const option = doctorOptions[i];
+                if (i === 0 || option.getAttribute('data-department') === selectedDepartment) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        });
+        
+        // Form submission handler
+        document.getElementById('patientAppointmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Basic validation
+            const timeFrom = document.getElementById('timeFrom').value;
+            const timeTo = document.getElementById('timeTo').value;
+            
+            if (timeFrom >= timeTo) {
+                alert('End time must be after start time');
+                return;
+            }
+            
+            // Collect form data
+            const patientName = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const department = document.getElementById('department').options[document.getElementById('department').selectedIndex].text;
+            const doctor = document.getElementById('doctor').options[document.getElementById('doctor').selectedIndex].text;
+            const appointmentType = document.getElementById('appointmentType').options[document.getElementById('appointmentType').selectedIndex].text;
+            
+            // Here you would typically send this data to a server
+            // For now, we'll just show confirmation message
+            alert(`Appointment created successfully!\n\nPatient: ${patientName}\nDepartment: ${department}\nDoctor: ${doctor}\nDate: ${appointmentDate}\nTime: ${timeFrom} - ${timeTo}\nType: ${appointmentType}`);
+            
+            // Optional: reset form after submission
+            // this.reset();
+        });
+    </script>
+</body>
+</html>

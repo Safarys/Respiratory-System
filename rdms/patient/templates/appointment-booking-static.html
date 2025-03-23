@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Appointment Booking System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .specialization-tabs {
+            display: flex;
+            gap: 10px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .doctors-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .doctor-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .doctor-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .doctor-info {
+            margin-bottom: 15px;
+        }
+        .availability {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .available {
+            background-color: #e6f7ee;
+            color: #27ae60;
+        }
+        .unavailable {
+            background-color: #fdeaeb;
+            color: #e74c3c;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+        .department-title {
+            margin: 20px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Patient Appointment Booking System</h1>
+    </header>
+    
+    <div class="container">
+        <div class="controls">
+            <div class="specialization-tabs">
+                <a class="tab" style="text-decoration: none;" href="{% url 'patientappointment' %}">All</a>
+                <a class="tab" style="text-decoration: none;" href="{% url 'patientappointment_Allergist' %}">Allergist/Immunologist</a>
+                <a class="tab" style="text-decoration: none;" href="{% url 'patientappointment_Sleep' %}">Sleep Specialist</a>
+                <a class="tab" style="text-decoration: none;" href="{% url 'patientappointment_Pulmonologist' %}">Pulmonologist</a>
+                
+            </div>
+            
+          
+        </div>
+        
+        <h2 class="department-title">Cardiology Department</h2>
+        
+            <div class="doctors-container">
+                {% if appointments %}
+                    {% for appointment in appointments %}
+                    <div class="doctor-card">
+                        <div class="doctor-name">Dr. {{ appointment.userid__firstname }} {{ appointment.userid__lastname }}</div>
+                        <div class="doctor-specialization">Specialization: {{ appointment.userid__doctor__Specialization }}</div>
+                        <div class="doctor-info">
+                            <div>Date: {{ appointment.date_she }}</div>
+                            <div>Time: From {{ appointment.time_from }} To {{ appointment.time_to }}</div>
+                            <div>Tokens Available: {{ appointment.no_tokens }}</div>
+                            <div>Available Tokens: {{ appointment.available_tokens }}</div>
+                            <div>Schedule ID: {{ appointment.schedule_id }}</div>
+
+
+                        </div>
+                        {% if appointment.no_tokens > 0 %}
+                        <form action="{% url 'book_shedule' appointment.schedule_id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Book Appointment</button>
+                        </form>                       
+                         {% else %}
+                            <span class="status unavailable">Fully Booked</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No available appointments at the moment.</p>
+                {% endif %}
+            </div>
+        
+        
+            
+           
+            
+          
+        
+        <!-- Other departments would be displayed similarly but are hidden by default -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+# view-prescription.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Prescription Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f8fa; color: #333; }
+        .container { max-width: 900px; margin: 20px auto; background-color: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        .header { background-color: #3498db; color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .prescription-container { padding: 20px; }
+        .prescription-section { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #3498db; }
+        .prescription-meta p { margin: 5px 0; }
+        .medicine-item { background-color: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 15px; display: grid; grid-template-columns: 3fr 1fr 1fr; gap: 15px; }
+        .medicine-name { font-weight: bold; }
+        .medicine-timing { display: flex; gap: 10px; margin-top: 5px; }
+        .timing-pill { background-color: #e1f0fa; color: #3498db; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+        .action-buttons { display: flex; justify-content: flex-end; gap: 15px; padding: 20px; background-color: #f9f9f9; }
+        .btn { padding: 10px 20px; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-outline { background-color: transparent; border: 1px solid #3498db; color: #3498db; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Prescription Details</h1>
+        </div>
+        
+        <div class="prescription-container">
+            <div class="prescription-section">
+                <div class="section-title">Prescription Information</div>
+                <div class="prescription-meta">
+                    <p><strong>Prescription ID:</strong> RX{{ appointment.id }}</p>
+                    <p><strong>Prescribed Date:</strong> {{ appointment.shedule_id.date_she }}</p>
+                    <p><strong>Doctor:</strong> Dr. {{ doctor.firstname }} {{ doctor.lastname }}</p>
+                </div>
+            </div>
+            
+            <div class="prescription-section">
+                <div class="section-title">Patient Information</div>
+                <p><strong>Name:</strong> {{ patient.firstname }} {{ patient.lastname }}</p>
+                <p><strong>Email:</strong> {{ patient.email }}</p>
+                <p><strong>Phone:</strong> {{ patient.phone }}</p>
+            </div>
+            
+            <div class="prescription-section">
+                <div class="section-title">Medications</div>
+                <div class="medicine-list">
+                    {% for prescription in prescriptions %}
+                    <div class="medicine-item">
+                        <div>
+                            <div class="medicine-name">{{ prescription.medicine_name }}</div>
+                            <div class="medicine-timing">
+                                {% if prescription.morning %}<span class="timing-pill">Morning</span>{% endif %}
+                                {% if prescription.afternoon %}<span class="timing-pill">Afternoon</span>{% endif %}
+                                {% if prescription.evening %}<span class="timing-pill">Evening</span>{% endif %}
+                            </div>
+                        </div>
+                        <div><strong>Dosage</strong><div>{{ prescription.dosage }}</div></div>
+                        <div><strong>Duration</strong><div>{{ prescription.duration }}</div></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/prescriptions/" class="btn btn-outline">Back to List</a>
+                <a href="#" class="btn btn-primary" onclick="window.print(); return false;">Print Prescription</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9f7fe;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .date-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            padding: 12px 10px;
+            border-bottom: 2px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>Appointment Schedule</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time From</th>
+                <th>Time To</th>
+                <th>Total Tokens</th>
+                <th>Tokens Left</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="date-header">
+                <td colspan="6">Monday, March 22, 2025</td>
+            </tr>
+            <tr>
+                <td>Mar 22, 2025</td>
+                <td>09:00 AM</td>
+                <td>09:30 AM</td>
+                <td>10</td>
+                <td>6</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+            <tr>
+                <td>Mar 22, 2025</td>
+                <td>09:30 AM</td>
+                <td>10:00 AM</td>
+                <td>10</td>
+                <td>3</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+            <tr>
+                <td>Mar 22, 2025</td>
+                <td>10:00 AM</td>
+                <td>10:30 AM</td>
+                <td>10</td>
+                <td>0</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+            <tr class="date-header">
+                <td colspan="6">Tuesday, March 23, 2025</td>
+            </tr>
+            <tr>
+                <td>Mar 23, 2025</td>
+                <td>09:00 AM</td>
+                <td>09:30 AM</td>
+                <td>8</td>
+                <td>8</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+            <tr>
+                <td>Mar 23, 2025</td>
+                <td>09:30 AM</td>
+                <td>10:00 AM</td>
+                <td>8</td>
+                <td>5</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+            <tr>
+                <td>Mar 23, 2025</td>
+                <td>10:00 AM</td>
+                <td>10:30 AM</td>
+                <td>8</td>
+                <td>2</td>
+                <td><button class="button">View Appointments</button></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

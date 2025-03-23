@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'predict',
     'patient',
+    'doctor'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'rdms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates','login/templates','patient/templates'],
+        'DIRS': ['templates','login/templates','patient/templates','doctor/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

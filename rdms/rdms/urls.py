@@ -24,6 +24,8 @@ urlpatterns = [
     path('',include('predict.urls')),
     path('',include('login.urls')),
     path('',include('patient.urls')),
+    path('',include('doctor.urls')),
+
 ]
 
 if settings.DEBUG:

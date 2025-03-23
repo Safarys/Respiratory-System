@@ -64,11 +64,14 @@ def preprocess_audio(file_path):
         logger.error(f"Error processing audio file: {e}")
         return None
 
-def predict_disease(request):
+
+
+def predict_disease(request, patid):
     """Handles disease prediction from an uploaded audio file."""
+    
     if request.method == 'POST' and request.FILES.get('audiofile'):
         audio_file = request.FILES['audiofile']
-        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}.wav"
+        filename = f"{patid}_{datetime.now().strftime('%Y%m%d%H%M%S')}.wav"
 
         # Ensure temp directory exists
         temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp')
@@ -80,19 +83,18 @@ def predict_disease(request):
                 f.write(chunk)
 
         try:
+            # Retrieve patient details from form
             patient_name = request.POST.get('name', 'Unknown')
             age = request.POST.get('age', 'Unknown')
             symptoms = request.POST.get('symptoms', 'Not Provided')
             date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Generate spectrogram and store it in a static/media folder
+            # Generate spectrogram
             spectrogram_filename = f"{filename}_spectrogram.png"
             spectrogram_path = os.path.join(settings.MEDIA_ROOT, 'spectrograms', spectrogram_filename)
             os.makedirs(os.path.dirname(spectrogram_path), exist_ok=True)
 
             generate_spectrogram(file_path, spectrogram_path)
-
-            # Convert file path to URL
             spectrogram_url = f"{settings.MEDIA_URL}spectrograms/{spectrogram_filename}"
 
             # Preprocess and Predict
@@ -108,14 +110,28 @@ def predict_disease(request):
             # Determine severity
             severity = "Mild" if confidence < 60 else "Moderate" if confidence < 85 else "Severe"
 
-            # Generate Report with Spectrogram
-            report_filename = f"{patient_name.replace(' ', '_')}_report.pdf"
-            report_path = generate_report(patient_name, age, symptoms, date, predicted_label, confidence, severity, spectrogram_path)
+            # Ensure reports directory exists
+            reports_dir = os.path.join(settings.MEDIA_ROOT, 'reports')
+            os.makedirs(reports_dir, exist_ok=True)
 
-            # Get report URL
+            # Generate and save the report PDF
+            report_filename = f"{patid}_report_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
+            report_path = os.path.join(reports_dir, report_filename)
+
+            # ✅ Fix argument mismatch (pass correct number of arguments)
+            generate_report(patient_name, age, symptoms, date, predicted_label, confidence, severity, spectrogram_path,report_path)
+
+            # ✅ Confirm file is saved
+            if not os.path.exists(report_path):
+                raise ValueError(f"Report was not saved at {report_path}")
+
+            # Generate report URL for frontend
             report_url = f"{settings.MEDIA_URL}reports/{report_filename}"
 
             result = f"Disease: {predicted_label} ({confidence:.2f}% confidence), Severity: {severity}"
+
+            # Save result to DiagnosticTest model
+            DiagnosticTest.objects.create(patid=patid, result=report_filename)
 
         except Exception as e:
             logger.error(f"Error in prediction: {e}")
@@ -124,9 +140,8 @@ def predict_disease(request):
             spectrogram_url = None
 
         finally:
-            # Delete temporary files
             if os.path.exists(file_path):
-                os.remove(file_path)
+                os.remove(file_path)  # Clean up temp audio file
 
         return render(request, 'index.html', {
             'result': result,
@@ -135,10 +150,3 @@ def predict_disease(request):
         })
 
     return render(request, 'index.html')
-
-
-
-
-
-
-
