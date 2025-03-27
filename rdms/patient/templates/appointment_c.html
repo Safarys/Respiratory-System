@@ -1,0 +1,27 @@
+<!-- appointment.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Appointment</title>
+</head>
+<body>
+    <h1>Book an Appointment</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="doctorid">Select Doctor:</label>
+        <select name="doctorid" required>
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.firstname }} {{ doctor.lastname }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="date">Select Date:</label>
+        <input type="date" name="date" required min="{{ today }}"><br><br>
+
+        <button type="submit">Book Appointment</button>
+    </form>
+</body>
+</html>

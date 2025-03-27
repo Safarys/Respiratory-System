@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from predict.models import user
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
-from doctor.models import Doctor
+from doctor.models import Doctor,Patient
 
 
 # Create your views here.
@@ -27,17 +27,20 @@ def login(request):
 
 
 def register(request):
-
-    if request.POST:
+    if request.method == "POST":
         username = request.POST.get('first_name')
-        lastname=request.POST.get('last_name')
+        lastname = request.POST.get('last_name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
 
-        if password==confirm_password:
-            user.objects.create(
+        if password == confirm_password:
+            # Create a new user
+            new_user = user.objects.create(
                 firstname=username,
                 lastname=lastname,
                 email=email,
@@ -45,6 +48,16 @@ def register(request):
                 password=make_password(password),
                 role=0
             )
+
+            # Add patient details linked to the new user
+            Patient.objects.create(
+                userid=new_user,  # Link to the created user
+                dob=dob,
+                gender=gender,
+                address=address
+            )
+
+            messages.success(request, "Registration successful!")
         else:
             messages.error(request, "Passwords do not match")
 

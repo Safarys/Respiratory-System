@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Medicine Prescription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .prescription-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        .patient-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .alternate-row {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="prescription-container">
+        <div class="prescription-header">
+            <h1> Prescription Details</h1>
+            <span><strong>Prescription Number:</strong> RX-2024-7890</span>
+        </div>
+
+        
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Dosage</th>
+                    
+                    <th>Duration</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Amoxicillin</td>
+                    <td>500 mg</td>
+                    
+                    <td>10 Days</td>
+                    
+                </tr>
+                <tr class="alternate-row">
+                    <td>Ibuprofen</td>
+                    <td>400 mg</td>
+                    
+                    <td>7 Days</td>
+                    
+                </tr>
+                
+            </tbody>
+        </table>
+
+        
+    </div>
+</body>
+</html>

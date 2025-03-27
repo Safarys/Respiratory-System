@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import Sheduler
-from patient.models import Appointments
+from patient.models import Appointments,Appointment_s
 from django.contrib import messages
 from datetime import date
-from .models import Prescription
+from .models import Prescription,Patient
 from predict.models import user
 from datetime import datetime
-
-
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.cache import never_cache
+from django.utils.decorators import decorator_from_middleware
+from django.middleware.cache import CacheMiddleware
 
 def doctordash(request):
     user_id = request.session.get('user_id')
@@ -33,7 +37,8 @@ def doctordash(request):
     # Print to check if it's fetching the patient ID correctly
     print("Appointments:", appointments)
 
-    return render(request, 'doctor.html', {'appointments': appointments})
+    return render(request, 'doctor.html', {'appointments': appointments, 'user_id': user_id})
+
 
 def shedulerdoctor(request):
     if request.method == 'POST':
@@ -94,6 +99,7 @@ def view_shedules(request):
 
 def add_presicription(request, id,pid):
     user_id = pid
+    doctor_id = request.session.get('user_id')
     if not user_id:
         return redirect('login')
 
@@ -129,7 +135,8 @@ def add_presicription(request, id,pid):
                         morning=morning,
                         afternoon=afternoon,
                         evening=evening,
-                        duration=duration
+                        duration=duration,
+                        doctor_id=doctor_id
                     )
                 saved_count += 1
                 
@@ -142,3 +149,55 @@ def add_presicription(request, id,pid):
             messages.error(request, "No valid medicine details provided.")
         
     return render(request, 'prescription.html', {'sheduler_id': id})
+
+def patient_view_page(request, id):
+    # Fetch the patient object using `userid`
+    patient = get_object_or_404(Patient, userid=id)
+
+    # Get the associated user
+    user = patient.userid  # Since `userid` is a ForeignKey to the User model
+
+    # Combine user and patient details
+    patient_details = {
+        "first_name": user.firstname,
+        "last_name": user.lastname,
+        "email": user.email,
+        "phone": user.phone,
+        "dob": patient.dob,
+        "gender": patient.gender,
+        "address": patient.address,
+    }
+
+    return render(request, 'patient_view.html', {"patient": patient_details})
+
+def prescription_doctor_view(request):
+    return render(request,'prescription_view.html')
+
+def logout_view(request) -> HttpResponseRedirect:
+    request.session.flush()  # Clear session
+    return redirect('home')  # Redirect to login page
+
+
+def doctor_appointments(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('login')  # Redirect if not authenticated
+
+    try:
+        doctor = user.objects.get(id=user_id, role='1')
+    except user.DoesNotExist:
+        return render(request, 'error.html', {'message': 'Unauthorized access'})
+
+    # Retrieve all appointments for this doctor
+    appointments = Appointment_s.objects.filter(doctorid=doctor)
+
+    # Generate patient numbers (Self-incrementing)
+    for idx, appointment in enumerate(appointments, start=1):
+        appointment.patient_number = idx
+
+    return render(request, 'doctor_appointments.html', {
+    'appointments': appointments,
+    'doctor_id': doctor.id,  # Ensure doctor_id is set properly
+    'patient_ids': [appt.userid.id for appt in appointments]
+})

@@ -1,0 +1,36 @@
+<!-- doctor_appointments.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Appointments</title>
+</head>
+<body>
+    <h1>Doctor Appointments</h1>
+    {% if appointments %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Patient Number</th>
+                    <th>Patient Name</th>
+                    <th>Appointment Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.patient_number }}</td>
+                    <td>{{ appointment.userid.firstname }} {{ appointment.userid.lastname }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>
+                        <a href="{% url 'add_presicription' doctor_id appointment.userid.id %}">Add Prescription</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No appointments available.</p>
+    {% endif %}
+</body>
+</html>

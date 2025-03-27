@@ -57,7 +57,7 @@ ROOT_URLCONF = 'rdms.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates','login/templates','patient/templates','doctor/templates'],
+        'DIRS': ['templates','login/templates','patient/templates','doctor/templates','admin/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'prdict.authentication.EmailAuthBackend',  # Replace 'yourapp' with your Django app name
+    'predict.authentication.EmailAuthBackend',  # Replace 'yourapp' with your Django app name
     'django.contrib.auth.backends.ModelBackend',
 ]
 # Internationalization
@@ -133,9 +133,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'  # Redirect to home after login
-LOGOUT_REDIRECT_URL = '/'  # Redirect to home after logout
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+SESSION_COOKIE_AGE = 3600  # Session expires after 1 hour
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = True  # Use HTTPS
+
+CACHE_MIDDLEWARE_SECONDS = 0  # No cache, pages always load fresh
+CACHE_MIDDLEWARE_KEY_PREFIX = ''

@@ -4,130 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Schedule</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
         }
-        h1 {
-            color: #2c3e50;
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
         }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+
+        .appointment-list {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .appointment-list h2 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
-        th {
-            background-color: #3498db;
-            color: white;
-            padding: 10px;
+
+        th, td {
+            padding: 1rem;
             text-align: left;
+            border-bottom: 1px solid #eee;
         }
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+
+        th {
+            background: #f8f9fa;
+            color: #1e3c72;
         }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #e9f7fe;
-        }
-        .button {
-            background-color: #3498db;
-            color: white;
+
+        .action-button {
+            padding: 0.5rem 1rem;
             border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
+            transition: background 0.3s;
         }
-        .button:hover {
-            background-color: #2980b9;
-        }
-        .date-header {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            padding: 12px 10px;
-            border-bottom: 2px solid #3498db;
+
+        .view-btn {
+            background: #007bff;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <h1>Appointment Schedule</h1>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time From</th>
-                <th>Time To</th>
-                <th>Total Tokens</th>
-                <th>Tokens Left</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="date-header">
-                <td colspan="6">Monday, March 22, 2025</td>
-            </tr>
-            <tr>
-                <td>Mar 22, 2025</td>
-                <td>09:00 AM</td>
-                <td>09:30 AM</td>
-                <td>10</td>
-                <td>6</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-            <tr>
-                <td>Mar 22, 2025</td>
-                <td>09:30 AM</td>
-                <td>10:00 AM</td>
-                <td>10</td>
-                <td>3</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-            <tr>
-                <td>Mar 22, 2025</td>
-                <td>10:00 AM</td>
-                <td>10:30 AM</td>
-                <td>10</td>
-                <td>0</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-            <tr class="date-header">
-                <td colspan="6">Tuesday, March 23, 2025</td>
-            </tr>
-            <tr>
-                <td>Mar 23, 2025</td>
-                <td>09:00 AM</td>
-                <td>09:30 AM</td>
-                <td>8</td>
-                <td>8</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-            <tr>
-                <td>Mar 23, 2025</td>
-                <td>09:30 AM</td>
-                <td>10:00 AM</td>
-                <td>8</td>
-                <td>5</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-            <tr>
-                <td>Mar 23, 2025</td>
-                <td>10:00 AM</td>
-                <td>10:30 AM</td>
-                <td>8</td>
-                <td>2</td>
-                <td><button class="button">View Appointments</button></td>
-            </tr>
-        </tbody>
-    </table>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Dr. Dashboard</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href=""><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="{% url 'patientappointment' %}"><i class="fas fa-calendar-alt"></i>Booking</a></li>
+            <li><a href="{% url 'book_appointment' %}"><i class="fas fa-calendar-alt"></i>Appointments</a></li>
+            <li><a href="{% url 'bookingshowpage' %}"><i class="fas fa-file-medical"></i>Prescriptions</a></li>
+            <li><a href="{% url 'test_view' %}"><i class="fas fa-chart-line"></i>Test Results</a></li>
+            <li><a href="{% url 'home' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="appointment-list">
+            <h2>Appointment Schedule</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time From</th>
+                        <th>Time To</th>
+                        <th>Total Tokens</th>
+                        <th>Tokens Left</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for schedule in schedules %}
+                    <tr>
+                        <td>{{ schedule.date_she }}</td>
+                        <td>{{ schedule.time_from }}</td>
+                        <td>{{ schedule.time_to }}</td>
+                        <td>{{ schedule.no_tokens }}</td>
+                        <td>6</td>
+                        <td><a href="#" class="view-btn action-button">View Appointments</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No schedules available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>

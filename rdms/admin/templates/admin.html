@@ -31,20 +31,22 @@
         .sidebar-menu {
             padding: 15px;
         }
-        .sidebar-menu button {
+        .sidebar-menu label {
             width: 100%;
+            display: block;
             padding: 10px;
             margin-bottom: 10px;
             text-align: left;
-            background: none;
-            border: none;
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .sidebar-menu button:hover {
+        .sidebar-menu label:hover {
             background-color: #f0f0f0;
         }
-        .sidebar-menu button.active {
+        .radio-btn {
+            display: none;
+        }
+        .radio-btn:checked + label {
             background-color: #3b82f6;
             color: white;
         }
@@ -60,266 +62,34 @@
             padding: 20px;
             display: none;
         }
-        .content-section.active {
+        /* Rest of the previous CSS remains the same */
+
+        /* Hide all radio buttons */
+        #dashboard-radio:checked ~ #dashboard,
+        #doctor-registration-radio:checked ~ #doctor-registration,
+        #doctor-management-radio:checked ~ #doctor-management,
+        #patient-management-radio:checked ~ #patient-management {
             display: block;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            margin-bottom: 5px;
-        }
-        .form-group input, 
-        .form-group select, 
-        .form-group textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        .table th {
-            background-color: #f0f0f0;
-        }
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-        .btn-primary {
-            background-color: #3b82f6;
-            color: white;
-        }
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-        }
-        .btn-warning {
-            background-color: #eab308;
-            color: white;
-        }
-        .stats-container {
-            display: flex;
-            justify-content: space-between;
-        }
-        .stat-card {
-            background-color: #f0f0f0;
-            padding: 20px;
-            text-align: center;
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-        .stat-card:last-child {
-            margin-right: 0;
-        }
-        .stat-card h3 {
-            margin-bottom: 10px;
-        }
-        .stat-card p {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .status-active {
-            background-color: green;
-            color: white;
-            padding: 5px;
-            border-radius: 3px;
         }
     </style>
 </head>
 <body>
+    
+
     <div class="sidebar">
         <div class="sidebar-header">
             Admin Dashboard
         </div>
         <div class="sidebar-menu">
-            <button onclick="showSection('dashboard')" class="active">Dashboard</button>
-            <button onclick="showSection('doctor-registration')">Doctor Registration</button>
-            <button onclick="showSection('doctor-management')">Doctor Management</button>
-            <button onclick="showSection('patient-management')">Patient Management</button>
+            <label for="dashboard-radio">Dashboard</label>
+            <a href="{% url 'doctorregister' %}"> <label for="doctor-registration-radio">Doctor Registration</label></a>
+           
+            <label for="doctor-management-radio">Doctor Management</label>
+            <label for="patient-management-radio">Patient Management</label>
         </div>
     </div>
     
-    <div class="main-content">
-        <!-- Dashboard Section -->
-        <div id="dashboard" class="content-section active">
-            <h2>System Statistics</h2>
-            <div class="stats-container">
-                <div class="stat-card">
-                    <h3>Total Doctors</h3>
-                    <p>25</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Patients</h3>
-                    <p>542</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Active Users</h3>
-                    <p>567</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Doctor Registration Section -->
-        <div id="doctor-registration" class="content-section">
-            <h2>Doctor Registration</h2>
-            <form id="doctorRegistrationForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>First Name</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name</label>
-                        <input type="text" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" required>
-                </div>
-                <div class="form-group">
-                    <label>Specialization</label>
-                    <select required>
-                        <option value="">Select Specialization</option>
-                        <option>Cardiology</option>
-                        <option>Pediatrics</option>
-                        <option>Neurology</option>
-                        <option>Orthopedics</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Medical License Number</label>
-                    <input type="text" required>
-                </div>
-                <div class="form-group">
-                    <label>Qualifications</label>
-                    <textarea rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Register Doctor</button>
-            </form>
-        </div>
-
-        <!-- Doctor Management Section -->
-        <div id="doctor-management" class="content-section">
-            <h2>Doctor Management</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Specialization</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Dr. John Doe</td>
-                        <td>Cardiology</td>
-                        <td>john.doe@hospital.com</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="btn btn-warning">Suspend</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Dr. Jane Smith</td>
-                        <td>Pediatrics</td>
-                        <td>jane.smith@hospital.com</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="btn btn-warning">Suspend</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Patient Management Section -->
-        <div id="patient-management" class="content-section">
-            <h2>Patient Management</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Age</th>
-                        <th>Last Visit</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>John Smith</td>
-                        <td>john.smith@example.com</td>
-                        <td>123-456-7890</td>
-                        <td>35</td>
-                        <td>2024-02-15</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Emily Davis</td>
-                        <td>emily.davis@example.com</td>
-                        <td>987-654-3210</td>
-                        <td>42</td>
-                        <td>2024-03-01</td>
-                        <td>
-                            <button class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        function showSection(sectionId) {
-            // Remove active class from all sections and buttons
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.querySelectorAll('.sidebar-menu button').forEach(button => {
-                button.classList.remove('active');
-            });
-
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Activate corresponding button
-            document.querySelector(`.sidebar-menu button[onclick="showSection('${sectionId}')"]`).classList.add('active');
-        }
-
-        // Form submission handler
-        document.getElementById('doctorRegistrationForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            alert('Doctor Registration Submitted!');
-        });
-    </script>
+    
+        
 </body>
 </html>

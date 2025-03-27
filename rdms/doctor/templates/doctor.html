@@ -139,15 +139,29 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.2rem;
+            font-size: 0.9rem;
         }
 
-        .approve-btn {
+        .view-past-btn {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .view-personal-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .add-prescription-btn {
             background: #28a745;
             color: white;
         }
 
-        .view-btn {
-            background: #007bff;
+        .diagnose-sound-btn {
+            background: #dc3545;
             color: white;
         }
     </style>
@@ -160,8 +174,13 @@
         <ul class="sidebar-menu">
             <li><a href="#"><i class="fas fa-home"></i>Dashboard</a></li>
             <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
+            {% if user_id == 10 %}
+            <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-calendar-alt"></i>Go to Admin</a></li>
+            {% endif %}
             <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
-            <li><a href="{% url 'home' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+            <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+
+            <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
     </aside>
 
@@ -193,6 +212,7 @@
                         <th>View Past Details</th>
                         <th>View Personal Details</th>
                         <th>Make New Prescription</th>
+                        <th>Diagnose Sound</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -200,22 +220,36 @@
                         {% for appointment in appointments %}
                         <tr>
                             <td>{{ appointment.userid__firstname }} {{ appointment.userid__lastname }}</td>
-                            <td><a href="">View Past Details</a></td>
-                            <td><a href="">View Personal Details</a></td>
-                            <td>   <a href="{% url 'add_presicription' appointment.shedule_id__id appointment.userid %}"> add</a>
+                            <td>
+                                <a href="" class="action-button view-past-btn">
+                                    View Past Details
+                                </a>
                             </td>
-                            <td>   <a href="{% url 'predict' appointment.userid %}"> add</a>
+                            <td>
+                                <a href="{% url 'patient_view_page' appointment.userid %}" class="action-button view-personal-btn">
+                                    View Personal Details
+                                </a>
                             </td>
-                            </tr>
+                            <td>
+                                <a href="{% url 'add_presicription' appointment.shedule_id__id appointment.userid %}" class="action-button add-prescription-btn">
+                                    Add Prescription
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'predict' appointment.userid %}" class="action-button diagnose-sound-btn">
+                                    Diagnose Sound
+                                </a>
+                            </td>
+                            
+                        </tr>
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="4">No appointments for today.</td>
+                            <td colspan="5">No appointments for today.</td>
                         </tr>
                     {% endif %}
                 </tbody>
             </table>
-            
         </div>
     </main>
 </body>

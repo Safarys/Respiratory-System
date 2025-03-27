@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,20 +15,59 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        @keyframes backgroundAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes formSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(
+                    -45deg, 
+                    rgba(30, 60, 114, 0.7), 
+                    rgba(42, 82, 152, 0.7), 
+                    rgba(30, 60, 114, 0.7)
+                ), 
+                url('{% static "images/rdms_img_2.jpg" %}') no-repeat center center fixed;
+            background-size: 200% 200%, cover;
+            animation: backgroundAnimation 15s ease infinite;
+            background-blend-mode: multiply;
         }
 
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 20;
         }
 
         .navbar h1 {
             color: #1e3c72;
             font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar h1:hover {
+            color: #2a5298;
         }
 
         .container {
@@ -41,9 +82,13 @@
             background: rgba(255, 255, 255, 0.95);
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
+            position: relative;
+            z-index: 10;
+            animation: formSlideIn 0.8s ease-out;
+            backdrop-filter: blur(5px);
         }
 
         .tab-container {
@@ -69,12 +114,14 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             color: #1e3c72;
+            transition: color 0.3s ease;
         }
 
         .form-group input {
@@ -83,12 +130,13 @@
             border: 2px solid #e9ecef;
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.2);
         }
 
         button {
@@ -101,11 +149,29 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
             background: #2a5298;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.6s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         .forgot-password {
@@ -116,6 +182,11 @@
         .forgot-password a {
             color: #1e3c72;
             text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #2a5298;
         }
 
         .register-link {
@@ -128,6 +199,11 @@
             color: #1e3c72;
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #2a5298;
         }
     </style>
 </head>
@@ -138,8 +214,7 @@
     <div class="container">
         <div class="form-container">
             <div class="tab-container">
-                <div class="tab active">Patient Login</div>
-                <div class="tab">Doctor Login</div>
+                <div class="tab active">User Login</div>
             </div>
             <form action="{% url 'login' %}" method="POST">
                 {% csrf_token %}
@@ -152,9 +227,7 @@
                     <input type="password" id="password" name="password" required>
                 </div>
                 <button type="submit">Login</button>
-                <div class="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
+                
                 <div class="register-link">
                     New Patient? <a href="{% url 'register' %}">Register here</a>
                 </div>

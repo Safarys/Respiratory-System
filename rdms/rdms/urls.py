@@ -18,6 +18,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth.views import LogoutView
+from doctor.views import logout_view  # Import your logout view
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +28,9 @@ urlpatterns = [
     path('',include('login.urls')),
     path('',include('patient.urls')),
     path('',include('doctor.urls')),
+    path('',include('admin.urls')),
+    
+
 
 ]
 

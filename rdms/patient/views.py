@@ -7,8 +7,49 @@ from .models import Appointments
 from urllib.parse import urlencode
 from django.conf import settings
 from predict.models import DiagnosticTest
+from patient.models import Appointment_s
 
 # Create your views here.
+
+def book_appointment(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('login')  # Redirect if not authenticated
+
+    # Get all doctors (role=1)
+    doctors = user.objects.filter(role='1')
+
+    if request.method == 'POST':
+        doctor_id = request.POST.get('doctorid')
+        appointment_date = request.POST.get('date')
+
+        try:
+            patient = user.objects.get(id=user_id)
+            doctor = user.objects.get(id=doctor_id)
+
+            # Save appointment
+            Appointment_s.objects.create(userid=patient, doctorid=doctor, date=appointment_date, status=0)
+
+            return render(request, 'appointment_c.html', {'message': 'Appointment booked successfully'})
+        
+        except user.DoesNotExist:
+            return render(request, 'appointment_c.html', {'doctors': doctors, 'error': 'Invalid doctor selected'})
+
+    return render(request, 'appointment_c.html', {'doctors': doctors})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def patient_dashboard(request):
     
@@ -247,3 +288,6 @@ def test_view(request):
         })
 
     return render(request, 'report-table-interface.html', {'reports': formatted_reports})
+
+
+
