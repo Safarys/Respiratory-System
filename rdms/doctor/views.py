@@ -3,7 +3,7 @@ from .models import Sheduler
 from patient.models import Appointments,Appointment_s
 from django.contrib import messages
 from datetime import date
-from .models import Prescription,Patient
+from .models import Prescription,Patient,Leave_doctor
 from predict.models import user
 from datetime import datetime
 from django.contrib.auth import logout
@@ -12,6 +12,33 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import decorator_from_middleware
 from django.middleware.cache import CacheMiddleware
+
+
+
+def leave_status(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('login')  # ensure login check
+
+    # Get leave records for the current doctor
+    leaves = Leave_doctor.objects.filter(userid_id=user_id).order_by('-date')
+
+    # Optional: Convert status codes to human-readable status
+    for leave in leaves:
+        if leave.status == 0:
+            leave.status_text = "Pending"
+        elif leave.status == 1:
+            leave.status_text = "Approved"
+        elif leave.status == 2:
+            leave.status_text = "Rejected"
+        else:
+            leave.status_text = "Unknown"
+
+    return render(request, 'leave-status.html', {'leaves': leaves})
+
+
+
 
 def doctordash(request):
     user_id = request.session.get('user_id')
@@ -33,11 +60,26 @@ def doctordash(request):
             'shedule_id__id'  # Sheduler table ID
         )
     )
-
+# 1. Appointments from Appointment_s (doctor’s direct appointments)
+    doctor_appointments = (
+        Appointment_s.objects
+        .filter(doctorid_id=user_id, date=current_date)
+        .select_related('userid')  # for patient info
+        .values(
+            'id',
+            'userid__id',
+            'userid__firstname',
+            'userid__lastname',
+            'date',
+            'status'
+        )
+    )
     # Print to check if it's fetching the patient ID correctly
     print("Appointments:", appointments)
+    print("Appointments:", doctor_appointments)
 
-    return render(request, 'doctor.html', {'appointments': appointments, 'user_id': user_id})
+
+    return render(request, 'doctor.html', {'doctor_appointments':doctor_appointments,'appointments': appointments, 'user_id': user_id})
 
 
 def shedulerdoctor(request):
@@ -150,6 +192,8 @@ def add_presicription(request, id,pid):
         
     return render(request, 'prescription.html', {'sheduler_id': id})
 
+
+
 def patient_view_page(request, id):
     # Fetch the patient object using `userid`
     patient = get_object_or_404(Patient, userid=id)
@@ -170,8 +214,19 @@ def patient_view_page(request, id):
 
     return render(request, 'patient_view.html', {"patient": patient_details})
 
-def prescription_doctor_view(request):
-    return render(request,'prescription_view.html')
+
+
+
+
+
+def prescription_doctor_view(request, userid):
+    user_instance = get_object_or_404(user, id=userid)  # Get user instance correctly
+    prescriptions = Prescription.objects.filter(userid=user_instance).order_by('-created_at')  # Use the instance
+
+    return render(request, 'prescription_view.html', {
+        'user': user_instance,
+        'prescriptions': prescriptions
+    })
 
 def logout_view(request) -> HttpResponseRedirect:
     request.session.flush()  # Clear session
@@ -201,3 +256,21 @@ def doctor_appointments(request):
     'doctor_id': doctor.id,  # Ensure doctor_id is set properly
     'patient_ids': [appt.userid.id for appt in appointments]
 })
+
+def leave(request):
+    user_id = request.session.get('user_id')
+
+    if not user_id:
+        return redirect('login')  # Ensure user is logged in
+
+    if request.method == 'POST':
+        date_l = request.POST.get('date')
+        reason = request.POST.get('reason')
+
+        if date_l and reason:
+            Leave_doctor.objects.create(userid_id=user_id, date=date_l, reason=reason,status=0)
+            return render(request, 'leave-request-page.html', {'success': True})
+        else:
+            return render(request, 'leave-request-page.html', {'error': 'All fields are required.'})
+
+    return render(request, 'leave-request-page.html')

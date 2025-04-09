@@ -1,27 +1,197 @@
-<!-- appointment.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Book Appointment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Patient Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+
+        .appointment-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .appointment-header {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e3c72;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .submit-button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .submit-button:hover {
+            background: #2a5298;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Book an Appointment</h1>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="doctorid">Select Doctor:</label>
-        <select name="doctorid" required>
-            {% for doctor in doctors %}
-                <option value="{{ doctor.id }}">{{ doctor.firstname }} {{ doctor.lastname }}</option>
-            {% endfor %}
-        </select><br><br>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Patient Portal</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'patients_dash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="{% url 'patientappointment' %}"><i class="fas fa-calendar-alt"></i>Booking</a></li>
+            <li><a href="{% url 'book_appointment' %}"><i class="fas fa-calendar-alt"></i>Appointments</a></li>
+            <li><a href="{% url 'patient_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+            <li><a href="{% url 'bookingshowpage' %}"><i class="fas fa-file-medical"></i>Prescriptions</a></li>
+            <li><a href="{% url 'test_view' %}"><i class="fas fa-chart-line"></i>Test Results</a></li>
+            <li><a href="{% url 'home' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </aside>
 
-        <label for="date">Select Date:</label>
-        <input type="date" name="date" required min="{{ today }}"><br><br>
+    <main class="main-content">
+        <div class="appointment-container">
+            <h2 class="appointment-header">
+                <i class="fas fa-calendar-plus"></i> Book an Appointment
+            </h2>
 
-        <button type="submit">Book Appointment</button>
-    </form>
+            {% if error %}
+            <script>
+                alert("{{ error }}");
+            </script>
+            {% endif %}
+            
+            {% if message %}
+            <script>
+                alert("{{ message }}");
+            </script>
+            {% endif %}
+            
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="doctorid">
+                        <i class="fas fa-user-md"></i> Select Doctor
+                    </label>
+                    <select name="doctorid" class="form-control" required>
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}">
+                                {{ doctor.firstname }} {{ doctor.lastname }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">
+                        <i class="fas fa-calendar-alt"></i> Select Date
+                    </label>
+                    <input type="date" name="date" class="form-control" required min="{{ today }}">
+                </div>
+
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-check"></i> Book Appointment
+                </button>
+            </form>
+        </div>
+    </main>
 </body>
 </html>

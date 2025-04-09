@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Status</title>
+    <style>
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">My Leave Requests</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sl.No</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leaves %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ leave.date }}</td>
+                <td>{{ leave.reason }}</td>
+                <td>{{ leave.status_text }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No leave requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

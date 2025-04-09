@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('patientappointment/test_view', views.test_view, name='test_view'),
 
+    path('my-appointments/', views.patient_appointments_view, name='patient_appointments'),
 
 
 

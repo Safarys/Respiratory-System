@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         @keyframes fadeIn {
@@ -18,79 +18,87 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         html, body {
             height: 100%;
             width: 100%;
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
         }
 
         .container {
-            width: 90%;
-            max-width: 1000px;
-            height: 90vh;
+            width: 100vw;
+            height: 100vh;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: grid;
-            grid-template-columns: 250px 1fr;
+            grid-template-columns: 260px 1fr;
             grid-template-rows: auto 1fr;
-            gap: 1rem;
-            padding: 1rem;
             position: relative;
             animation: fadeIn 0.7s ease-out;
+            overflow: hidden;
         }
 
         .sidebar {
             grid-row: span 2;
-            background: #1e3c72;
-            border-radius: 10px;
+            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.05);
         }
 
         .back-button {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background: #1e3c72;
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
         .back-button:hover {
             background: #2a5298;
-            animation: wiggle 0.3s;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .sidebar-header {
             text-align: center;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header h2 {
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .sidebar-menu {
             list-style: none;
             margin-top: 1rem;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
         }
 
         .sidebar-menu a {
@@ -98,91 +106,229 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            padding: 0.7rem;
-            border-radius: 5px;
-            transition: background 0.3s;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
         }
 
         .sidebar-menu a:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.2);
         }
 
         .sidebar-menu i {
-            margin-right: 10px;
-            width: 25px;
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            overflow: auto;
+            padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
         .header {
-            grid-column: span 2;
-            text-align: center;
+            grid-column: 2;
+            grid-row: 1;
             color: #1e3c72;
-            padding: 0.5rem;
+            padding: 1.5rem;
+            border-bottom: 2px solid #f0f2f5;
+            display: flex;
+            align-items: center;
+        }
+
+        .header h2 {
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+
+        .header i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+            color: #2a5298;
         }
 
         .upload-section {
+            background: #fff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 1rem;
         }
 
         .upload-area {
             border: 2px dashed #2a5298;
             border-radius: 15px;
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
         }
 
         .upload-area:hover {
             background: rgba(42, 82, 152, 0.05);
             border-color: #1e3c72;
+            animation: pulse 1s infinite;
         }
 
         .upload-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #1e3c72;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p:last-child {
+            font-size: 0.9rem;
+            color: #888;
         }
 
         .file-input {
             display: none;
         }
 
+        #selected-file-name {
+            margin-top: 1rem;
+            font-weight: 500;
+            color: #2a5298;
+        }
+
         .action-button {
-            background: #1e3c72;
+            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             border: none;
-            padding: 0.8rem;
-            border-radius: 5px;
+            padding: 1rem;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.2);
         }
 
         .action-button:hover {
-            background: #2a5298;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        .action-button i {
+            font-size: 1.1rem;
         }
 
         .results-section {
             background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
+            border-radius: 15px;
+            padding: 1.5rem;
             overflow: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-section h3 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e9f0;
+        }
+
+        .results-section h4 {
+            color: #2a5298;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .results-section p {
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .spectrogram {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e9f0;
+        }
+
+        .spectrogram img {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .empty-results {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .empty-results i {
+            font-size: 4rem;
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-results h3 {
+            color: #555;
+            margin-bottom: 0.5rem;
+            border: none;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+            }
         }
 
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto 1fr;
-                width: 95%;
-                height: 95vh;
             }
 
             .sidebar {
                 grid-row: auto;
                 grid-column: span 1;
+            }
+
+            .header {
+                grid-column: 1;
+                grid-row: 2;
+            }
+
+            .main-content {
+                grid-column: 1;
+                grid-row: 3;
+                padding: 0 1rem 1rem 1rem;
             }
         }
     </style>
@@ -199,54 +345,73 @@
             </div>
             <ul class="sidebar-menu">
                 <li><a href="{% url 'doctordash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
-                <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make Schedule</a></li>
-                <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View Schedules</a></li>
-                <li><a href="{% url 'home' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+                <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
+                {% if user_id == 10 %}
+                <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-calendar-alt"></i>Go to Admin</a></li>
+                {% endif %}
+                <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
+                <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+                {% if not user_id == 10 %}
+                <li><a href="{% url 'leave' %}"><i class="fas fa-calendar-alt"></i>Leave Request</a></li>
+                {% endif %}
+    
+                <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
             </ul>
+            
         </div>
 
-        <h2 class="header">Respiratory Disease Prediction</h2>
-
-        <div class="upload-section">
-            <form action="" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="upload-area" onclick="document.getElementById('audio-file').click()">
-                    <i class="fas fa-microphone upload-icon"></i>
-                    <p>Click or drag audio file here</p>
-                    <p>Supported formats: .wav, .mp3, .ogg</p>
-                    <input type="file" id="audio-file" name="audiofile" accept=".wav,.mp3,.ogg" required class="file-input" onchange="updateFileName(this)">
-                    <div id="selected-file-name"></div>
-                </div>
-                <button type="submit" class="action-button">
-                    <i class="fas fa-stethoscope"></i> Analyze Audio
-                </button>
-            </form>
+        <div class="header">
+            <i class="fas fa-stethoscope"></i>
+            <h2>Respiratory Disease Prediction</h2>
         </div>
 
-        <div class="results-section">
-            {% if result %}
+        <div class="main-content">
+            <div class="upload-section">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="upload-area" onclick="document.getElementById('audio-file').click()">
+                        <i class="fas fa-microphone upload-icon"></i>
+                        <p>Click or drag audio file here</p>
+                        <p>Supported formats: .wav, .mp3, .ogg</p>
+                        <input type="file" id="audio-file" name="audiofile" accept=".wav,.mp3,.ogg" required class="file-input" onchange="updateFileName(this)">
+                        <div id="selected-file-name"></div>
+                    </div>
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-stethoscope"></i> Analyze Audio
+                    </button>
+                </form>
+            </div>
+
+            <div class="results-section">
+                {% if result %}
                 <h3>Prediction Result</h3>
                 <p>{{ result }}</p>
 
                 {% if spectrogram_path %}
-                    <div class="spectrogram">
-                        <h4>Spectrogram</h4>
-                        <img src="{{ spectrogram_path }}" alt="Generated Spectrogram">
-                    </div>
+                <div class="spectrogram">
+                    <h4>Spectrogram Analysis</h4>
+                    <img src="{{ spectrogram_path }}" alt="Generated Spectrogram">
+                </div>
                 {% endif %}
 
                 {% if report_path %}
+                <div style="margin-top: 1.5rem; text-align: center;">
                     <a href="{{ report_path }}" download="prediction_report.pdf">
-                        <button class="action-button">Download Report</button>
+                        <button class="action-button">
+                            <i class="fas fa-file-download"></i> Download Report
+                        </button>
                     </a>
+                </div>
                 {% endif %}
-            {% else %}
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-stethoscope" style="font-size: 3rem; color: #1e3c72;"></i>
+                
+                {% else %}
+                <div class="empty-results">
+                    <i class="fas fa-waveform"></i>
                     <h3>No Results Yet</h3>
                     <p>Upload an audio file to get prediction results</p>
                 </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 

@@ -37,3 +37,10 @@ class Patient(models.Model):
     dob=models.DateField()
     gender=models.CharField(max_length=10)
     address=models.TextField(max_length=100)  
+
+
+class Leave_doctor(models.Model):
+    userid = models.ForeignKey(user, on_delete=models.CASCADE)
+    date=models.DateField()
+    reason=models.TextField()
+    status=models.IntegerField()

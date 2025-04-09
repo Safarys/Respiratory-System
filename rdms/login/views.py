@@ -17,7 +17,9 @@ def login(request):
         us=user.objects.filter(email=email).first()
         if check_password(password, us.password):  # Compare the hashed password with the entered password         
                 request.session['user_id'] = us.id  # Store user ID in the session
-                if us.role == "0":
+                if us.id==10:
+                    return redirect('admin_dashboard')     
+                elif us.role == "0":
                     return redirect('patients_dash')     
                 elif us.role=="1":   
                     return redirect('doctordash')     

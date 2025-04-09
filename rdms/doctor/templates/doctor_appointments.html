@@ -1,36 +1,172 @@
-<!-- doctor_appointments.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Appointments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+
+        .appointments-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .appointments-container h2 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #1e3c72;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.2rem;
+            font-size: 0.9rem;
+        }
+
+        .add-prescription-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .no-appointments {
+            text-align: center;
+            color: #6c757d;
+            padding: 2rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Doctor Appointments</h1>
-    {% if appointments %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Patient Number</th>
-                    <th>Patient Name</th>
-                    <th>Appointment Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for appointment in appointments %}
-                <tr>
-                    <td>{{ appointment.patient_number }}</td>
-                    <td>{{ appointment.userid.firstname }} {{ appointment.userid.lastname }}</td>
-                    <td>{{ appointment.date }}</td>
-                    <td>
-                        <a href="{% url 'add_presicription' doctor_id appointment.userid.id %}">Add Prescription</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No appointments available.</p>
-    {% endif %}
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Dr. Dashboard</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'doctordash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
+            {% if user_id == 10 %}
+            <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-calendar-alt"></i>Go to Admin</a></li>
+            {% endif %}
+            <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
+            <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+            {% if not user_id == 10 %}
+            <li><a href="{% url 'leave' %}"><i class="fas fa-calendar-alt"></i>Leave Request</a></li>
+            {% endif %}
+            <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="appointments-container">
+            <h2>All Appointments</h2>
+            {% if appointments %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient Number</th>
+                            <th>Patient Name</th>
+                            <th>Appointment Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.patient_number }}</td>
+                            <td>{{ appointment.userid.firstname }} {{ appointment.userid.lastname }}</td>
+                            <td>{{ appointment.date }}</td>
+                            <td>
+                                <a href="{% url 'add_presicription' doctor_id appointment.userid.id %}" class="action-button add-prescription-btn">
+                                    Add Prescription
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-appointments">
+                    <p>No appointments available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
 </body>
 </html>

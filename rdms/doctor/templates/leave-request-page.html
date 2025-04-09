@@ -4,81 +4,173 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leave Request</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f4f8;
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
         }
-        .leave-request-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
         }
-        .form-group {
-            margin-bottom: 20px;
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
         }
-        label {
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
             display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
             border-radius: 5px;
+            transition: background 0.3s;
         }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .leave-request-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
         .status {
-            padding: 10px;
-            background-color: #f0f0f0;
+            background-color: #f8f9fa;
+            padding: 1rem;
             border-radius: 5px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            color: #1e3c72;
         }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
         .leave-button {
             width: 100%;
-            padding: 12px;
-            background-color: #0d109a;
+            padding: 0.75rem;
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
         }
+
         .leave-button:hover {
-            background-color: #45a049;
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <div class="leave-request-container">
-        <div class="status">
-            <strong>Current Status:</strong> Active
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Dr. Dashboard</h2>
         </div>
-        
-        <form>
-            <div class="form-group">
-                <label for="date">Date of Leave:</label>
-                <input type="date" id="date" name="date" required>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'doctordash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
+            {% if user_id == 10 %}
+            <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-calendar-alt"></i>Go to Admin</a></li>
+            {% endif %}
+            <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
+            <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+            {% if not user_id == 10 %}
+            <li><a href="{% url 'leave' %}"><i class="fas fa-calendar-alt"></i>Leave Request</a></li>
+            {% endif %}  
+                      <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <!-- {% if success %}
+    <p style="color: green;">Leave request submitted successfully!</p>
+{% elif error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %} -->
+
+        <div class="leave-request-container">
+            <div class="status">
+                <strong>Current Status:</strong> Active
             </div>
-            
-            <div class="form-group">
-                <label for="reason">Reason for Leave:</label>
-                <select id="reason" name="reason" required>
-                    <option value="">Select Reason</option>
-                    <option value="sick">Sick Leave</option>
-                    <option value="vacation">Vacation</option>
-                    <option value="personal">Personal Leave</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            
-            <button type="submit" class="leave-button">Submit Leave Request</button>
-        </form>
-    </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="date">Date of Leave:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">Reason for Leave:</label>
+                    <select id="reason" name="reason" required>
+                        <option value="">Select Reason</option>
+                        <option value="sick">Sick Leave</option>
+                        <option value="vacation">Vacation</option>
+                        <option value="personal">Personal Leave</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="leave-button">Submit Leave Request</button>
+            </form>
+        </div>
+    </main>
 </body>
 </html>

@@ -8,6 +8,9 @@ from urllib.parse import urlencode
 from django.conf import settings
 from predict.models import DiagnosticTest
 from patient.models import Appointment_s
+from doctor.models import Leave_doctor
+from datetime import datetime
+
 
 # Create your views here.
 
@@ -25,22 +28,50 @@ def book_appointment(request):
         appointment_date = request.POST.get('date')
 
         try:
+            appointment_date_obj = datetime.strptime(appointment_date, "%Y-%m-%d").date()
             patient = user.objects.get(id=user_id)
             doctor = user.objects.get(id=doctor_id)
 
-            # Save appointment
-            Appointment_s.objects.create(userid=patient, doctorid=doctor, date=appointment_date, status=0)
+            # Check if doctor is on approved leave for selected date
+            is_on_leave = Leave_doctor.objects.filter(
+                userid=doctor,
+                date=appointment_date_obj,
+                status=1  # Approved leave
+            ).exists()
 
-            return render(request, 'appointment_c.html', {'message': 'Appointment booked successfully'})
-        
+            if is_on_leave:
+                return render(request, 'appointment_c.html', {
+                    'doctors': doctors,
+                    'error': 'Doctor is on leave for the selected date. Please choose another date or doctor.'
+                })
+
+            # Save appointment
+            Appointment_s.objects.create(userid=patient, doctorid=doctor, date=appointment_date_obj, status=0)
+
+            return render(request, 'appointment_c.html', {
+                'doctors': doctors,
+                'message': 'Appointment booked successfully.'
+            })
+
         except user.DoesNotExist:
-            return render(request, 'appointment_c.html', {'doctors': doctors, 'error': 'Invalid doctor selected'})
+            return render(request, 'appointment_c.html', {
+                'doctors': doctors,
+                'error': 'Invalid doctor selected.'
+            })
 
     return render(request, 'appointment_c.html', {'doctors': doctors})
 
 
 
+def patient_appointments_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')  # Ensure user is logged in
 
+    # Get appointments for the logged-in patient
+    appointments = Appointment_s.objects.filter(userid_id=user_id).select_related('doctorid').order_by('-date')
+
+    return render(request, 'patient_appointments.html', {'appointments': appointments})
 
 
 
