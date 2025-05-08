@@ -93,6 +93,7 @@
 
         .form-group {
             margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .form-group.full-width {
@@ -156,6 +157,50 @@
             font-weight: bold;
         }
 
+        /* Validation styles */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group input.invalid, .form-group select.invalid, .form-group textarea.invalid {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .form-group input.valid, .form-group select.valid, .form-group textarea.valid {
+            border-color: #28a745;
+        }
+
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            border-radius: 2px;
+            background-color: #e9ecef;
+            position: relative;
+        }
+
+        .password-strength-meter {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            width: 0%;
+        }
+
+        .weak {
+            background-color: #dc3545;
+        }
+
+        .medium {
+            background-color: #ffc107;
+        }
+
+        .strong {
+            background-color: #28a745;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .container {
@@ -165,6 +210,10 @@
             
             .form-side {
                 flex: 0 0 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -177,28 +226,33 @@
         <div class="form-side">
             <div class="form-container">
                 <h2>Patient Registration</h2>
-                <form action="{% url 'register' %}" method="POST">
+                <form id="registrationForm" action="{% url 'register' %}" method="POST" novalidate>
                     {% csrf_token %}
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="first_name">First Name</label>
                             <input type="text" id="first_name" name="first_name" required>
+                            <div class="error-message" id="first_name_error">Please enter a valid first name (letters only)</div>
                         </div>
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
                             <input type="text" id="last_name" name="last_name" required>
+                            <div class="error-message" id="last_name_error">Please enter a valid last name (letters only)</div>
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" required>
+                            <div class="error-message" id="email_error">Please enter a valid email address</div>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone Number</label>
                             <input type="tel" id="phone" name="phone" required>
+                            <div class="error-message" id="phone_error">Please enter a valid phone number</div>
                         </div>
                         <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob" name="dob" required>
+                            <div class="error-message" id="dob_error">Please enter a valid date of birth</div>
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender</label>
@@ -208,18 +262,25 @@
                                 <option value="female">Female</option>
                                 <option value="other">Other</option>
                             </select>
+                            <div class="error-message" id="gender_error">Please select a gender</div>
                         </div>
                         <div class="form-group full-width">
                             <label for="address">Address</label>
                             <textarea id="address" name="address" rows="3" required></textarea>
+                            <div class="error-message" id="address_error">Please enter a valid address</div>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password" required>
+                            <div class="password-strength">
+                                <div class="password-strength-meter" id="password-meter"></div>
+                            </div>
+                            <div class="error-message" id="password_error">Password must be at least 8 characters with letters, numbers, and special characters</div>
                         </div>
                         <div class="form-group">
                             <label for="confirm_password">Confirm Password</label>
                             <input type="password" id="confirm_password" name="confirm_password" required>
+                            <div class="error-message" id="confirm_password_error">Passwords do not match</div>
                         </div>
                         <button type="submit">Register</button>
                         <div class="login-link">
@@ -230,5 +291,266 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const firstNameInput = document.getElementById('first_name');
+            const lastNameInput = document.getElementById('last_name');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const dobInput = document.getElementById('dob');
+            const genderInput = document.getElementById('gender');
+            const addressInput = document.getElementById('address');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+            const passwordMeter = document.getElementById('password-meter');
+
+            // Validation patterns
+            const namePattern = /^[A-Za-z\s'-]+$/;
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const phonePattern = /^(\+\d{1,3}[- ]?)?\d{10,14}$/;
+
+            // Real-time validation for first name
+            firstNameInput.addEventListener('input', function() {
+                validateField(this, namePattern, 'first_name_error');
+            });
+
+            // Real-time validation for last name
+            lastNameInput.addEventListener('input', function() {
+                validateField(this, namePattern, 'last_name_error');
+            });
+
+            // Real-time validation for email
+            emailInput.addEventListener('input', function() {
+                validateField(this, emailPattern, 'email_error');
+            });
+
+            // Real-time validation for phone
+            phoneInput.addEventListener('input', function() {
+                validateField(this, phonePattern, 'phone_error');
+            });
+
+            // Real-time validation for dob
+            dobInput.addEventListener('change', function() {
+                const today = new Date();
+                const birthDate = new Date(this.value);
+                const errorElement = document.getElementById('dob_error');
+                
+                if (isNaN(birthDate) || birthDate > today) {
+                    showError(this, errorElement, "Please enter a valid birth date (not in the future)");
+                } else {
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    if (age > 120) {
+                        showError(this, errorElement, "Please enter a valid birth date");
+                    } else {
+                        hideError(this, errorElement);
+                    }
+                }
+            });
+
+            // Real-time validation for gender
+            genderInput.addEventListener('change', function() {
+                const errorElement = document.getElementById('gender_error');
+                if (this.value === '') {
+                    showError(this, errorElement);
+                } else {
+                    hideError(this, errorElement);
+                }
+            });
+
+            // Real-time validation for address
+            addressInput.addEventListener('input', function() {
+                const errorElement = document.getElementById('address_error');
+                if (this.value.trim().length < 5) {
+                    showError(this, errorElement, "Address should be at least 5 characters long");
+                } else {
+                    hideError(this, errorElement);
+                }
+            });
+
+            // Password strength meter
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                const errorElement = document.getElementById('password_error');
+                
+                // Check password strength
+                const strength = checkPasswordStrength(password);
+                
+                // Update the password meter
+                updatePasswordMeter(strength);
+                
+                if (password.length < 8) {
+                    showError(this, errorElement, "Password must be at least 8 characters long");
+                } else if (strength === 'weak') {
+                    showError(this, errorElement, "Password is too weak. Add numbers and special characters");
+                } else {
+                    hideError(this, errorElement);
+                }
+                
+                // Check if confirm password matches
+                if (confirmPasswordInput.value) {
+                    validatePasswordMatch();
+                }
+            });
+
+            // Confirm password validation
+            confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                // Validate first name
+                if (!validateField(firstNameInput, namePattern, 'first_name_error')) {
+                    isValid = false;
+                }
+                
+                // Validate last name
+                if (!validateField(lastNameInput, namePattern, 'last_name_error')) {
+                    isValid = false;
+                }
+                
+                // Validate email
+                if (!validateField(emailInput, emailPattern, 'email_error')) {
+                    isValid = false;
+                }
+                
+                // Validate phone
+                if (!validateField(phoneInput, phonePattern, 'phone_error')) {
+                    isValid = false;
+                }
+                
+                // Validate DOB
+                const today = new Date();
+                const birthDate = new Date(dobInput.value);
+                const dobErrorElement = document.getElementById('dob_error');
+                
+                if (isNaN(birthDate) || birthDate > today) {
+                    showError(dobInput, dobErrorElement, "Please enter a valid birth date (not in the future)");
+                    isValid = false;
+                }
+                
+                // Validate gender
+                const genderErrorElement = document.getElementById('gender_error');
+                if (genderInput.value === '') {
+                    showError(genderInput, genderErrorElement);
+                    isValid = false;
+                }
+                
+                // Validate address
+                const addressErrorElement = document.getElementById('address_error');
+                if (addressInput.value.trim().length < 5) {
+                    showError(addressInput, addressErrorElement, "Address should be at least 5 characters long");
+                    isValid = false;
+                }
+                
+                // Validate password
+                const passwordErrorElement = document.getElementById('password_error');
+                if (passwordInput.value.length < 8) {
+                    showError(passwordInput, passwordErrorElement, "Password must be at least 8 characters long");
+                    isValid = false;
+                } else if (checkPasswordStrength(passwordInput.value) === 'weak') {
+                    showError(passwordInput, passwordErrorElement, "Password is too weak. Add numbers and special characters");
+                    isValid = false;
+                }
+                
+                // Validate confirm password
+                if (!validatePasswordMatch()) {
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+
+            // Function to validate a field with a pattern
+            function validateField(field, pattern, errorId) {
+                const errorElement = document.getElementById(errorId);
+                if (!pattern.test(field.value) && field.value !== '') {
+                    showError(field, errorElement);
+                    return false;
+                } else if (field.value === '') {
+                    showError(field, errorElement, "This field is required");
+                    return false;
+                } else {
+                    hideError(field, errorElement);
+                    return true;
+                }
+            }
+
+            // Function to validate password match
+            function validatePasswordMatch() {
+                const errorElement = document.getElementById('confirm_password_error');
+                if (confirmPasswordInput.value !== passwordInput.value) {
+                    showError(confirmPasswordInput, errorElement);
+                    return false;
+                } else {
+                    hideError(confirmPasswordInput, errorElement);
+                    return true;
+                }
+            }
+
+            // Function to show error message
+            function showError(field, errorElement, message) {
+                field.classList.add('invalid');
+                field.classList.remove('valid');
+                errorElement.style.display = 'block';
+                if (message) {
+                    errorElement.textContent = message;
+                }
+            }
+
+            // Function to hide error message
+            function hideError(field, errorElement) {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+                errorElement.style.display = 'none';
+            }
+
+            // Function to check password strength
+            function checkPasswordStrength(password) {
+                const hasUpperCase = /[A-Z]/.test(password);
+                const hasLowerCase = /[a-z]/.test(password);
+                const hasNumbers = /\d/.test(password);
+                const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                
+                const strength = 
+                    (hasUpperCase ? 1 : 0) + 
+                    (hasLowerCase ? 1 : 0) + 
+                    (hasNumbers ? 1 : 0) + 
+                    (hasSpecialChars ? 1 : 0);
+                
+                if (password.length < 8) {
+                    return 'weak';
+                } else if (strength === 1) {
+                    return 'weak';
+                } else if (strength === 2) {
+                    return 'medium';
+                } else if (strength >= 3) {
+                    return 'strong';
+                }
+            }
+
+            // Function to update password strength meter
+            function updatePasswordMeter(strength) {
+                passwordMeter.className = 'password-strength-meter';
+                
+                if (strength === 'weak') {
+                    passwordMeter.classList.add('weak');
+                    passwordMeter.style.width = '33%';
+                } else if (strength === 'medium') {
+                    passwordMeter.classList.add('medium');
+                    passwordMeter.style.width = '66%';
+                } else if (strength === 'strong') {
+                    passwordMeter.classList.add('strong');
+                    passwordMeter.style.width = '100%';
+                } else {
+                    passwordMeter.style.width = '0%';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

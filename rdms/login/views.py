@@ -79,30 +79,43 @@ def doctorregister(request):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirmPassword')
 
-        
+        # Basic validation
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'doctor_reg.html')
 
-        if password == confirm_password:
+        if user.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists.")
+            return render(request, 'doctor_reg.html')
+
+        try:
+            # Create user object
             hashed_password = make_password(password)
-            user_obj =user.objects.create(
+            user_obj = user.objects.create(
                 firstname=username,
                 lastname=lastname,
                 email=email,
                 phone=phone,
                 password=hashed_password,
-                role=1
+                role=1  # Assuming 1 means doctor
             )
 
-            Specialization = request.POST.get('Specialization')
+            # Create doctor object with ForeignKey as model instance (not ID)
+            specialization = request.POST.get('Specialization')
             medical_li_no = request.POST.get('medical_li_no')
             qualification = request.POST.get('qualification')
-            doctor = Doctor.objects.create(
-                userid=user_obj.id,  # Associate the Doctor with the user
-                Specialization=Specialization,
+
+            Doctor.objects.create(
+                userid=user_obj,
+                Specialization=specialization,
                 medical_li_no=medical_li_no,
                 qualification=qualification
             )
-            messages.success(request, "User created successfully")
-        else:
-            messages.error(request, "Passwords do not match")
+
+            messages.success(request, "Doctor registered successfully!")
+            return render(request, 'doctor_reg.html')  # Or wherever you want to redirect after successful registration
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
 
     return render(request, 'doctor_reg.html')

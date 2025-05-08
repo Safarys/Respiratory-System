@@ -139,7 +139,7 @@
             Admin Dashboard
         </div>
         <div class="sidebar-menu">
-            <a href="{% url 'dashboard' %}"><label>Dashboard</label></a>
+            <a href="{% url 'admin_dashboard' %}"><label>Dashboard</label></a>
             <a href="{% url 'doctorregister' %}"><label>Doctor Registration</label></a>
             <a href="{% url 'manage_leave_requests' %}"><label>Leave Applications</label></a>
             <a href="{% url 'manage_doctors' %}"><label>Doctor Management</label></a>
@@ -171,7 +171,7 @@
                         <td>{{ doctor.firstname }} {{ doctor.lastname }}</td>
                         <td>{{ doctor.email }}</td>
                         <td>{{ doctor.phone }}</td>
-                        <td>{{ doctor.specialization }}</td>
+                        <td>{{ doctor.Specialization }}</td>
                         <td>
                             <form method="post" action="{% url 'delete_user' doctor.id %}" onsubmit="return confirm('Are you sure you want to delete this doctor?');">
                                 {% csrf_token %}

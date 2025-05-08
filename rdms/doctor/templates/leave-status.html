@@ -1,51 +1,170 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Leave Status</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDMS - Leave Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        table {
-            width: 70%;
-            border-collapse: collapse;
-            margin: 20px auto;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        th, td {
-            border: 1px solid #333;
-            padding: 10px;
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+
+        .leave-status-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .leave-status-container h2 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
             text-align: center;
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
         th {
-            background-color: #eee;
+            background: #f8f9fa;
+            color: #1e3c72;
+        }
+
+        .status-pill {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">My Leave Requests</h2>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Dr. Dashboard</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'doctordash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
+            <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
+            <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
+            <li><a href="{% url 'leave' %}"><i class="fas fa-calendar-alt"></i>Leave Request</a></li>
+            <li><a href="{% url 'leave_status' %}"><i class="fas fa-calendar-check"></i>Leave Status</a></li>
+            <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+        </ul>
+    </aside>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Sl.No</th>
-                <th>Date</th>
-                <th>Reason</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for leave in leaves %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ leave.date }}</td>
-                <td>{{ leave.reason }}</td>
-                <td>{{ leave.status_text }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">No leave requests found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <main class="main-content">
+        <div class="leave-status-container">
+            <h2>My Leave Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ leave.date }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td>
+                            {% if leave.status_text == 'Pending' %}
+                            <span class="status-pill status-pending">{{ leave.status_text }}</span>
+                            {% elif leave.status_text == 'Approved' %}
+                            <span class="status-pill status-approved">{{ leave.status_text }}</span>
+                            {% else %}
+                            <span class="status-pill status-rejected">{{ leave.status_text }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No leave requests found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
 </body>
 </html>

@@ -121,14 +121,10 @@
         <ul class="sidebar-menu">
             <li><a href="{% url 'doctordash' %}"><i class="fas fa-home"></i>Dashboard</a></li>
             <li><a href="{% url 'shedulerdoctor' %}"><i class="fas fa-calendar-alt"></i>Make shedule</a></li>
-            {% if user_id == 10 %}
-            <li><a href="{% url 'admin_dashboard' %}"><i class="fas fa-calendar-alt"></i>Go to Admin</a></li>
-            {% endif %}
             <li><a href="{% url 'view_shedules' %}"><i class="fas fa-calendar-alt"></i>View shedules</a></li>
             <li><a href="{% url 'doctor_appointments' %}"><i class="fas fa-calendar-alt"></i>View Appointments</a></li>
-            {% if not user_id == 10 %}
             <li><a href="{% url 'leave' %}"><i class="fas fa-calendar-alt"></i>Leave Request</a></li>
-            {% endif %}
+            <li><a href="{% url 'leave_status' %}"><i class="fas fa-calendar-alt"></i>Leave Status</a></li>
             <li><a href="{% url 'logout_view' %}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
     </aside>
